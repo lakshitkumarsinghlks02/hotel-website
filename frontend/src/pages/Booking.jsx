@@ -21,7 +21,7 @@ function Booking() {
     e.preventDefault();
 
     try {
-      await axios.post("https://hotel-backend-nwde.onrender.com", formData);
+      axios.post("https://hotel-backend-nwde.onrender.com/api/bookings", formData)
       alert("Booking Successful 🎉");
 
       setFormData({
