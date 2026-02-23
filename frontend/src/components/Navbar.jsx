@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
 
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+
 
   useEffect(() => {
     const handleScroll = () => {
