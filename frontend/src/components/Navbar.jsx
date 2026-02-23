@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+const [scrolled, setScrolled] = useState(false);
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
