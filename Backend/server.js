@@ -4,10 +4,15 @@ const cors = require("cors");
 
 const bookingRoutes = require("./routes/bookingRoutes");
 
-const app = express();   // ✅ app initialized FIRST
+const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS Configuration (IMPORTANT)
+app.use(cors({
+    origin: "https://hotel-website-izgn.vercel.app", // your Vercel frontend URL
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Routes
@@ -18,8 +23,9 @@ mongoose.connect("mongodb+srv://hoteladmin:Hotel2.0@cluster0.w16ofm7.mongodb.net
     .then(() => console.log("MongoDB Connected ✅"))
     .catch((err) => console.log(err));
 
-// Start Server
-const PORT = 5000;
+// Start Server (IMPORTANT FIX FOR RENDER)
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} 🚀`);
 });
