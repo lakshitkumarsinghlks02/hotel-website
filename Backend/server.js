@@ -7,11 +7,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const app = express();
 
 // ✅ CORS Configuration (IMPORTANT)
-app.use(cors({
-    origin: "https://hotel-website-izgn.vercel.app", // your Vercel frontend URL
-    methods: ["GET", "POST"],
-    credentials: true
-}));
+app.use(cors());
 
 app.use(express.json());
 
@@ -31,5 +27,5 @@ app.listen(PORT, () => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+    res.send("Backend is running 🚀");
 });
