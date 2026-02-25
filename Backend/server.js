@@ -1,14 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 
-const bookingRoutes = require("./routes/bookingRoutes");
-const Booking = require("./models/Booking"); // make sure this exists
+const Booking = require("./models/Booking");
 
 const app = express();
 
-// ✅ CORS Configuration
 app.use(cors());
 app.use(express.json());
 
@@ -18,14 +17,14 @@ const sendBookingEmail = async (bookingData) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "lakshitkumarsingh.lks02@gmail.com", // 👈 replace
-            pass: "wvrvzwpbjxdxfjdw"     // 👈 replace with Gmail App Password
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     });
 
     const mailOptions = {
-        from: "yourgmail@gmail.com",
-        to: "yourgmail@gmail.com",
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
         subject: "New Hotel Booking 🏨",
         html: `
             <h2>New Booking Received</h2>
@@ -40,30 +39,34 @@ const sendBookingEmail = async (bookingData) => {
     await transporter.sendMail(mailOptions);
 };
 
-// ================= BOOKING ROUTE WITH EMAIL =================
+// ================= ROUTE =================
 
 app.post("/api/bookings", async (req, res) => {
     try {
         const newBooking = new Booking(req.body);
         await newBooking.save();
 
-        // ✅ Send email after saving
-        await sendBookingEmail(req.body);
+        // Try sending email but don't fail booking if email fails
+        try {
+            await sendBookingEmail(req.body);
+            console.log("Email sent successfully ✅");
+        } catch (emailError) {
+            console.log("Email failed but booking saved:", emailError.message);
+        }
 
-        res.status(200).json({ message: "Booking successful & email sent ✅" });
+        res.status(200).json({ message: "Booking successful ✅" });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Something went wrong" });
     }
 });
 
-// ================= MONGO CONNECTION =================
+// ================= MONGO =================
 
-mongoose.connect("mongodb+srv://hoteladmin:Hotel2.0@cluster0.w16ofm7.mongodb.net/hotelwebsite?appName=Cluster0")
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected ✅"))
     .catch((err) => console.log(err));
-
-// ================= START SERVER =================
 
 const PORT = process.env.PORT || 5000;
 
