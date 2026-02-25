@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,7 +25,7 @@ function Navbar() {
           LuxuryStay
         </h1>
 
-        {/* Desktop Links */}
+        {/* Links (Visible on both mobile & desktop) */}
         <div className="flex items-center space-x-3 text-xs md:text-sm">
           <Link to="/" className="hover:text-yellow-400 transition">
             Home
@@ -44,28 +43,7 @@ function Navbar() {
           </Link>
         </div>
 
-       
-
-      {/* Mobile Dropdown Menu */}
-      {menuOpen && (
-        <div className="md:hidden flex flex-col items-center bg-black/90 text-white py-4 space-y-4">
-          <Link to="/" onClick={() => setMenuOpen(false)}>
-            Home
-          </Link>
-
-          <Link to="/gallery" onClick={() => setMenuOpen(false)}>
-            Gallery
-          </Link>
-
-          <Link
-            to="/booking"
-            className="px-4 py-1.5 bg-yellow-500 text-black rounded-full"
-            onClick={() => setMenuOpen(false)}
-          >
-            Book Now
-          </Link>
-        </div>
-      )}
+      </div> {/* ✅ CLOSED PROPERLY */}
     </nav>
   );
 }
