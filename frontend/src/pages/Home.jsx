@@ -62,33 +62,29 @@ function Home() {
             Our Luxury Rooms
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10 items-stretch">
 
-            {/* Room 1 */}
             <RoomCard
               name="Deluxe Room"
               img="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80"
             />
 
-            {/* Room 2 */}
             <RoomCard
               name="Premium Suite"
               img="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80"
             />
 
-            {/* Room 3 */}
             <RoomCard
               name="Presidential Suite"
               img="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80"
             />
 
-            {/* Room 4 - MOBILE ONLY */}
-            <div className="md:hidden">
-              <RoomCard
-                name="Royal Suite"
-                img="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80"
-              />
-            </div>
+            {/* Mobile Only Room */}
+            <RoomCard
+              name="Royal Suite"
+              img="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80"
+              mobileOnly
+            />
 
           </div>
         </div>
@@ -163,23 +159,28 @@ function Home() {
   );
 }
 
-/* Reusable Room Card Component */
-const RoomCard = ({ name, img }) => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-lg md:shadow-xl hover:shadow-2xl transition duration-500 group">
+/* ROOM CARD COMPONENT */
+const RoomCard = ({ name, img, mobileOnly }) => (
+  <div
+    className={`bg-white rounded-2xl overflow-hidden shadow-lg md:shadow-xl hover:shadow-2xl transition duration-500 group flex flex-col h-full ${mobileOnly ? "md:hidden" : ""
+      }`}
+  >
     <img
       src={img}
       alt={name}
-      className="h-40 md:h-64 w-full object-cover group-hover:scale-110 transition duration-500"
+      className="h-40 md:h-64 w-full object-cover"
     />
 
-    <div className="p-4 md:p-6">
+    <div className="p-4 md:p-6 flex flex-col flex-grow">
       <h3 className="text-lg md:text-2xl font-semibold mb-2 md:mb-3">
         {name}
       </h3>
-      <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">
+
+      <p className="text-gray-600 text-sm md:text-base mb-4 flex-grow">
         Experience unmatched comfort and modern elegance.
       </p>
-      <button className="text-yellow-500 font-semibold text-sm md:text-base hover:underline">
+
+      <button className="text-yellow-500 font-semibold text-sm md:text-base mt-auto hover:underline">
         View Details →
       </button>
     </div>
