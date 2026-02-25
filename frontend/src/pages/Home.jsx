@@ -6,11 +6,12 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 
 function Home() {
   useEffect(() => {
     AOS.init({
-      duration: 700, // faster animation
+      duration: 700,
       once: true,
     });
   }, []);
@@ -164,6 +165,27 @@ function Home() {
           </p>
         </div>
       </motion.section>
+
+      {/* FLOATING SOCIAL ICONS */}
+      <div className="fixed bottom-5 right-5 flex flex-col gap-4 z-50">
+        <a
+          href="https://wa.me/918982312069"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-green-500 p-4 rounded-full shadow-lg hover:scale-110 transition duration-300"
+        >
+          <FaWhatsapp className="text-white text-2xl" />
+        </a>
+
+        <a
+          href="https://instagram.com/mr_lakshit_06"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-4 rounded-full shadow-lg hover:scale-110 transition duration-300"
+        >
+          <FaInstagram className="text-white text-2xl" />
+        </a>
+      </div>
     </>
   );
 }
@@ -174,7 +196,6 @@ const RoomCard = ({ name, img, mobileOnly }) => (
     className={`bg-white rounded-2xl overflow-hidden shadow-lg md:shadow-xl hover:shadow-2xl transition duration-300 flex flex-col h-full ${mobileOnly ? "md:hidden" : ""
       }`}
   >
-    {/* IMAGE ANIMATION ONLY */}
     <div className="overflow-hidden">
       <motion.img
         src={img}
