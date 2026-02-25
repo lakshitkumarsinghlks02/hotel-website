@@ -49,26 +49,26 @@ function Gallery() {
           Our Hotel Gallery
         </motion.h1>
 
-        {/* 2 Photos Per Row */}
-        <div className="grid md:grid-cols-2 gap-10">
+        {/* Responsive Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-10">
 
           {images.map((item, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.02 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+              className="bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-xl overflow-hidden"
             >
               <img
                 src={item.src}
                 alt={item.location}
-                className="w-full h-96 object-cover"
+                className="w-full h-40 md:h-96 object-cover"
               />
 
-              <div className="p-6">
-                <h2 className="text-2xl font-semibold text-gray-900">
+              <div className="p-3 md:p-6">
+                <h2 className="text-sm md:text-2xl font-semibold text-gray-900">
                   {item.location}
                 </h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-xs md:text-base text-gray-600 mt-1 md:mt-2">
                   {item.detail}
                 </p>
               </div>
