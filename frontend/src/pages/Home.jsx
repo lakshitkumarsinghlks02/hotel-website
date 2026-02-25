@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 function Home() {
   useEffect(() => {
     AOS.init({
-      duration: 1000,
+      duration: 700, // faster animation
       once: true,
     });
   }, []);
@@ -29,9 +29,9 @@ function Home() {
 
         <div className="relative text-center text-white px-4 max-w-4xl">
           <motion.h1
-            initial={{ opacity: 0, y: -50 }}
+            initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.7 }}
             className="text-4xl md:text-7xl font-bold leading-tight"
           >
             Discover Timeless Luxury
@@ -40,7 +40,7 @@ function Home() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
             className="mt-6 text-base md:text-lg text-gray-300"
           >
             Where elegance meets comfort and unforgettable experiences await.
@@ -48,6 +48,8 @@ function Home() {
 
           <motion.button
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
             className="mt-8 px-8 md:px-10 py-3 md:py-4 bg-yellow-500 text-black font-semibold rounded-full shadow-lg"
           >
             Explore Rooms
@@ -56,45 +58,48 @@ function Home() {
       </div>
 
       {/* ROOMS SECTION */}
-      <section className="py-16 md:py-24 bg-[#f8f8f8]">
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="py-16 md:py-24 bg-[#f8f8f8]"
+      >
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <h2 className="text-3xl md:text-5xl font-bold text-center mb-12 md:mb-16">
             Our Luxury Rooms
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10 items-stretch">
-
             <RoomCard
               name="Deluxe Room"
               img="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80"
             />
-
             <RoomCard
               name="Premium Suite"
               img="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80"
             />
-
             <RoomCard
               name="Presidential Suite"
               img="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80"
             />
-
-            {/* Mobile Only Room */}
             <RoomCard
               name="Royal Suite"
               img="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80"
               mobileOnly
             />
-
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* TESTIMONIALS SECTION */}
-      <section className="py-20 md:py-32 bg-gradient-to-b from-black via-[#111111] to-black text-white relative overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true }}
+        className="py-20 md:py-32 bg-gradient-to-b from-black via-[#111111] to-black text-white relative overflow-hidden"
+      >
         <div className="relative max-w-5xl mx-auto px-4 md:px-6 text-center">
           <h2 className="text-3xl md:text-6xl font-bold mb-12 md:mb-20">
             What Our Guests Say
@@ -134,10 +139,14 @@ function Home() {
             ))}
           </Swiper>
         </div>
-      </section>
+      </motion.section>
 
       {/* PARALLAX SECTION */}
-      <section
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
         className="h-[50vh] md:h-[70vh] bg-fixed bg-center bg-cover flex items-center justify-center relative"
         style={{
           backgroundImage:
@@ -154,7 +163,7 @@ function Home() {
             Discover elegance, comfort and world-class hospitality.
           </p>
         </div>
-      </section>
+      </motion.section>
     </>
   );
 }
@@ -162,14 +171,19 @@ function Home() {
 /* ROOM CARD COMPONENT */
 const RoomCard = ({ name, img, mobileOnly }) => (
   <div
-    className={`bg-white rounded-2xl overflow-hidden shadow-lg md:shadow-xl hover:shadow-2xl transition duration-500 group flex flex-col h-full ${mobileOnly ? "md:hidden" : ""
+    className={`bg-white rounded-2xl overflow-hidden shadow-lg md:shadow-xl hover:shadow-2xl transition duration-300 flex flex-col h-full ${mobileOnly ? "md:hidden" : ""
       }`}
   >
-    <img
-      src={img}
-      alt={name}
-      className="h-40 md:h-64 w-full object-cover"
-    />
+    {/* IMAGE ANIMATION ONLY */}
+    <div className="overflow-hidden">
+      <motion.img
+        src={img}
+        alt={name}
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.3 }}
+        className="h-40 md:h-64 w-full object-cover"
+      />
+    </div>
 
     <div className="p-4 md:p-6 flex flex-col flex-grow">
       <h3 className="text-lg md:text-2xl font-semibold mb-2 md:mb-3">
@@ -180,9 +194,13 @@ const RoomCard = ({ name, img, mobileOnly }) => (
         Experience unmatched comfort and modern elegance.
       </p>
 
-      <button className="text-yellow-500 font-semibold text-sm md:text-base mt-auto hover:underline">
+      <motion.button
+        whileHover={{ x: 4 }}
+        transition={{ duration: 0.2 }}
+        className="text-yellow-500 font-semibold text-sm md:text-base mt-auto hover:underline"
+      >
         View Details →
-      </button>
+      </motion.button>
     </div>
   </div>
 );
