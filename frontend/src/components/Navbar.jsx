@@ -27,7 +27,7 @@ function Navbar() {
         </h1>
 
         {/* Desktop Links */}
-        <div className="space-x-6 hidden md:flex items-center text-sm">
+        <div className="flex items-center space-x-3 text-xs md:text-sm">
           <Link to="/" className="hover:text-yellow-400 transition">
             Home
           </Link>
@@ -38,20 +38,13 @@ function Navbar() {
 
           <Link
             to="/booking"
-            className="px-4 py-1.5 bg-yellow-500 text-black rounded-full hover:bg-yellow-400 transition text-sm font-medium"
+            className="px-3 py-1 bg-yellow-500 text-black rounded-full hover:bg-yellow-400 transition font-medium"
           >
-            Book Now
+            Book
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-2xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          ☰
-        </button>
-      </div>
+       
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
