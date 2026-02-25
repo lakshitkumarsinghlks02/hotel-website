@@ -27,7 +27,7 @@ const sendBookingEmail = async (bookingData) => {
                 <p><strong>Email:</strong> ${bookingData.email}</p>
                 <p><strong>Check-in:</strong> ${bookingData.checkIn}</p>
                 <p><strong>Check-out:</strong> ${bookingData.checkOut}</p>
-                <p><strong>Check-guests:</strong> ${bookingData.guests}</p>
+                <p><strong>Guests:</strong> ${bookingData.guests}</p>
                 <hr/>
                 <p style="color:gray;">This booking was submitted from your hotel website.</p>
             </div>
