@@ -1,4 +1,3 @@
-import ChatBot from "./components/ChatBot";
 import Gallery from "./pages/Gallery";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -17,7 +16,7 @@ function App() {
       </Routes>
 
       {/* MUST BE HERE */}
-      <ChatBot />
+
 
     </Router>
   );
