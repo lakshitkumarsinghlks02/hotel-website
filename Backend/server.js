@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { Resend } = require("resend");
+const OpenAI = require("openai"); // ✅ ADDED
 
 const Booking = require("./models/Booking");
 
@@ -11,40 +12,60 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ================= OPENAI SETUP =================
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
 // ================= RESEND EMAIL SETUP =================
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendBookingEmail = async (bookingData) => {
-    await resend.emails.send({
-        from: "Hotel Booking <onboarding@resend.dev>",  // default test sender
-        to: process.env.EMAIL_USER,  // your email (add this in environment)
-        subject: "New Hotel Booking 🏨",
-        html: `
-            <div style="font-family: Arial; padding:20px;">
-                <h2 style="color:#2c3e50;">New Booking Received</h2>
-                <p><strong>Name:</strong> ${bookingData.name}</p>
-                <p><strong>Email:</strong> ${bookingData.email}</p>
-                <p><strong>Check-in:</strong> ${bookingData.checkIn}</p>
-                <p><strong>Check-out:</strong> ${bookingData.checkOut}</p>
-                <p><strong>Guests:</strong> ${bookingData.guests}</p>
-                <hr/>
-                <p style="color:gray;">This booking was submitted from your hotel website.</p>
-            </div>
-        `
-    });
-};
+// ================= CHATBOT ROUTE =================
+// NEW ROUTE ADDED HERE
 
-// ================= ROUTE =================
+app.post("/api/chat", async (req, res) => {
+    try {
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({ error: "Message is required" });
+        }
+
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You are a professional hotel assistant. Help users with booking, room availability, pricing, check-in and check-out details."
+                },
+                {
+                    role: "user",
+                    content: message
+                }
+            ],
+        });
+
+        res.json({
+            reply: response.choices[0].message.content
+        });
+
+    } catch (error) {
+        console.error("Chatbot Error:", error);
+        res.status(500).json({ error: "Chatbot failed" });
+    }
+});
+
+// ================= BOOKING ROUTE =================
 
 app.post("/api/bookings", async (req, res) => {
     try {
         const { name, email, checkIn, checkOut, guests } = req.body;
 
-        // Generate unique booking ID
         const bookingId = "HB-" + Date.now();
 
-        // Calculate total nights
         const nights = Math.ceil(
             (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)
         );
@@ -60,63 +81,38 @@ app.post("/api/bookings", async (req, res) => {
 
         await newBooking.save();
 
-        // ================= SEND ADMIN EMAIL =================
-
         try {
+            // ADMIN EMAIL
             await resend.emails.send({
                 from: "Hotel Booking <onboarding@resend.dev>",
                 to: process.env.EMAIL_USER,
                 subject: `New Booking Received - ${bookingId}`,
                 html: `
-                    <div style="font-family:Arial;padding:30px;background:#f4f6f9;">
-                        <div style="max-width:600px;margin:auto;background:white;padding:25px;border-radius:10px;">
-                            <h2 style="color:#2c3e50;">🏨 New Booking Received</h2>
-                            <p><strong>Booking ID:</strong> ${bookingId}</p>
-                            <p><strong>Name:</strong> ${name}</p>
-                            <p><strong>Email:</strong> ${email}</p>
-                            <p><strong>Guests:</strong> ${guests}</p>
-                            <p><strong>Check-in:</strong> ${checkIn}</p>
-                            <p><strong>Check-out:</strong> ${checkOut}</p>
-                            <p><strong>Total Nights:</strong> ${nights}</p>
-                            <hr/>
-                            <p style="color:gray;font-size:14px;">
-                                This booking was submitted from your hotel website.
-                            </p>
-                        </div>
-                    </div>
+                    <h2>New Booking Received</h2>
+                    <p><strong>Booking ID:</strong> ${bookingId}</p>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Guests:</strong> ${guests}</p>
+                    <p><strong>Check-in:</strong> ${checkIn}</p>
+                    <p><strong>Check-out:</strong> ${checkOut}</p>
+                    <p><strong>Total Nights:</strong> ${nights}</p>
                 `
             });
 
-            // ================= SEND CUSTOMER EMAIL =================
-
+            // CUSTOMER EMAIL
             await resend.emails.send({
                 from: "Hotel Booking <onboarding@resend.dev>",
                 to: email,
                 subject: `Your Booking Confirmation - ${bookingId}`,
                 html: `
-                    <div style="font-family:Arial;padding:30px;background:#f4f6f9;">
-                        <div style="max-width:600px;margin:auto;background:white;padding:25px;border-radius:10px;">
-                            <h2 style="color:#27ae60;">✅ Booking Confirmed</h2>
-                            <p>Dear ${name},</p>
-                            <p>Thank you for choosing our hotel! Your booking has been confirmed.</p>
-
-                            <div style="background:#f9fafb;padding:15px;border-radius:8px;margin-top:15px;">
-                                <p><strong>Booking ID:</strong> ${bookingId}</p>
-                                <p><strong>Check-in:</strong> ${checkIn}</p>
-                                <p><strong>Check-out:</strong> ${checkOut}</p>
-                                <p><strong>Guests:</strong> ${guests}</p>
-                                <p><strong>Total Nights:</strong> ${nights}</p>
-                            </div>
-
-                            <p style="margin-top:20px;">
-                                We look forward to welcoming you! 🏨
-                            </p>
-
-                            <p style="color:gray;font-size:14px;">
-                                If you have any questions, simply reply to this email.
-                            </p>
-                        </div>
-                    </div>
+                    <h2>Booking Confirmed ✅</h2>
+                    <p>Dear ${name},</p>
+                    <p>Your booking has been confirmed.</p>
+                    <p><strong>Booking ID:</strong> ${bookingId}</p>
+                    <p><strong>Check-in:</strong> ${checkIn}</p>
+                    <p><strong>Check-out:</strong> ${checkOut}</p>
+                    <p><strong>Guests:</strong> ${guests}</p>
+                    <p><strong>Total Nights:</strong> ${nights}</p>
                 `
             });
 
@@ -137,6 +133,12 @@ app.post("/api/bookings", async (req, res) => {
     }
 });
 
+// ================= ROOT =================
+
+app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+});
+
 // ================= MONGO =================
 
 mongoose.connect(process.env.MONGO_URI)
@@ -147,8 +149,4 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} 🚀`);
-});
-
-app.get("/", (req, res) => {
-    res.send("Backend is running 🚀");
 });
