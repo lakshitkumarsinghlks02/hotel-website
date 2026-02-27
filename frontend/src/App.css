@@ -32,7 +32,17 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ========================= */
+/* Move Tidio Chat Above WhatsApp */
+/* ========================= */
+
+#tidio-chat iframe {
+  bottom: 140px !important;
+  right: 20px !important;
 }
