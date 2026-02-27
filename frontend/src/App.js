@@ -1,4 +1,4 @@
-import ChatBot from "./components/ChatBot.jsx";
+import ChatBot from "./components/ChatBot";
 import Gallery from "./pages/Gallery";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -16,7 +16,7 @@ function App() {
         <Route path="/gallery" element={<Gallery />} />
       </Routes>
 
-      {/* ✅ Add ChatBot here */}
+      {/* MUST BE HERE */}
       <ChatBot />
 
     </Router>
